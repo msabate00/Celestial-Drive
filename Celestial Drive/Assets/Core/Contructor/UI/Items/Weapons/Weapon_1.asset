@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b4649c8196005741946d37f2f99d3fb, type: 3}
+  m_Name: Weapon_1
+  m_EditorClassIdentifier: 
+  nameString: Weapon_1
+  visual: {fileID: 21300000, guid: ad32f6e5c8b3f764589c9305ec29e4f0, type: 3}
+  placedObjectTypeSO: {fileID: 11400000, guid: fc917aaa63f9b404892d86d9f0cbf234, type: 2}
+  type: 1
+  typeButton: 100
