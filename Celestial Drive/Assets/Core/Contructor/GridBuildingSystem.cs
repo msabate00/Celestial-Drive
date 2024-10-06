@@ -31,7 +31,11 @@ public class GridBuildingSystem : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+        
         int gridWidth = size;
         int gridHeight = size;
         int gridVerticals = size;
