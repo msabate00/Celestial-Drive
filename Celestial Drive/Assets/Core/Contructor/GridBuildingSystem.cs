@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GridBuildingSystem : MonoBehaviour
 {
-    [SerializeField] private List<PlacedObjectTypeSO> placedObjectTypeSOList;
+    private List<PlacedObjectTypeSO> placedObjectTypeSOList;
     private PlacedObjectTypeSO placedObjectTypeSO;
 
     private List<GridXZ<GridObject>> grids = new List<GridXZ<GridObject>>();
@@ -40,7 +41,7 @@ public class GridBuildingSystem : MonoBehaviour
         int gridHeight = size;
         int gridVerticals = size;
 
-        placedObjectTypeSO = placedObjectTypeSOList[0];
+       
 
         roofMaterial = roofGridToRay.GetComponent<MeshRenderer>().sharedMaterial;
         floorMaterial = floorGridToRay.GetComponent<MeshRenderer>().sharedMaterial;
@@ -72,6 +73,8 @@ public class GridBuildingSystem : MonoBehaviour
 
         if (putCenterPrincipalObject)
         {
+            placedObjectTypeSO = placedObjectTypeSOList[0];
+
             Vector2Int rotationOffset = placedObjectTypeSO.GetRotationOffset(dir);
             int x = Mathf.FloorToInt(size / 2)-1;
             
@@ -82,7 +85,7 @@ public class GridBuildingSystem : MonoBehaviour
             try
             {
                 List<Vector2Int> gridPositionList = placedObjectTypeSO.GetGridPositionList(new Vector2Int(x, z), dir);
-                PlacedObject placedObject = PlacedObject.Create(placedObjectWorldPosition, new Vector2Int(x, z), dir, placedObjectTypeSO);
+                PlacedObject placedObject = PlacedObject.Create(placedObjectWorldPosition, new Vector2Int(x, z), dir, placedObjectTypeSO, gridIndex);
                 foreach (Vector2Int gridPosition in gridPositionList)
                 {
                     grid.GetGridObject(gridPosition.x, gridPosition.y).SetPlacedObject(placedObject);
@@ -99,7 +102,7 @@ public class GridBuildingSystem : MonoBehaviour
 
     public void Start()
     {
-       
+        placedObjectTypeSOList = BlockList.Instance.GetPlacedObjectTypeSOList();
     }
 
 
@@ -167,7 +170,7 @@ public class GridBuildingSystem : MonoBehaviour
 
                         try
                         {
-                            PlacedObject placedObject = PlacedObject.Create(placedObjectWorldPosition, new Vector2Int(x, z), dir, placedObjectTypeSO);
+                            PlacedObject placedObject = PlacedObject.Create(placedObjectWorldPosition, new Vector2Int(x, z), dir, placedObjectTypeSO, gridIndex);
                             for (int i = 0; i < placedObjectTypeSO.GetLabel(); i++)
                             {
                                 if (gridIndex + i >= grids.Count) { break; }
@@ -319,7 +322,7 @@ public class GridBuildingSystem : MonoBehaviour
     }
 
 
-    private void DeselectObjectType()
+    public void DeselectObjectType()
     {
         placedObjectTypeSO = null;
         isDemolishActive = false;
@@ -344,7 +347,36 @@ public class GridBuildingSystem : MonoBehaviour
     }
 
 
+    public void CleanAllPlacedObjects()
+    {
+        foreach (var grid in grids)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                for (int z = 0; z < size; z++)
+                {
+                    GridObject gridObject = grid.GetGridObject(x, z);
+                    if (gridObject.GetPlacedObject() != null)
+                    {
+                        gridObject.GetPlacedObject().DestroySelf();
+                        gridObject.ClearPlacedObject();
+                    }
+                }
+            }
+        }
+    }
 
+    
+
+    public GridXZ<GridObject> GetGridByIndex(int index)
+    {
+        if (index >= 0 && index < grids.Count)
+        {
+            return grids[index];
+        }
+        Debug.LogError("Índice de cuadrícula fuera de rango: " + index);
+        return null;
+    }
 
 
 
@@ -390,6 +422,8 @@ public class GridBuildingSystem : MonoBehaviour
         {
             return x + ", " + z + " \n" + placedObject;
         }
+
+        
 
     }
 

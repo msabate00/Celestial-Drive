@@ -6,8 +6,9 @@ public class PlacedObject : MonoBehaviour
 {
     static PlacedObject actual;
     public string nameString;
+    private int gridIndex;
 
-    public static PlacedObject Create(Vector3 worldPosition, Vector2Int origin, PlacedObjectTypeSO.Dir dir, PlacedObjectTypeSO placedObjectTypeSO) {
+    public static PlacedObject Create(Vector3 worldPosition, Vector2Int origin, PlacedObjectTypeSO.Dir dir, PlacedObjectTypeSO placedObjectTypeSO, int gridIndex) {
         
         Transform placedObjectTransform = Instantiate(placedObjectTypeSO.prefab, worldPosition, Quaternion.Euler(0, placedObjectTypeSO.GetRotationAngle(dir), 0));
         PlacedObject placedObject = placedObjectTransform.GetComponent<PlacedObject>();
@@ -16,7 +17,7 @@ public class PlacedObject : MonoBehaviour
         placedObject.origin = origin;
         placedObject.dir = dir;
         placedObject.nameString = placedObjectTypeSO.nameString;
-
+        placedObject.gridIndex = gridIndex;
 
         actual = placedObject;
 
@@ -31,6 +32,10 @@ public class PlacedObject : MonoBehaviour
     public List<Vector2Int> GetGridPositionList() {
         return placedObjectTypeSO.GetGridPositionList(origin, dir);
     }
+    public PlacedObjectTypeSO.Dir GetDir()
+    {
+        return dir;
+    }
 
     public int GetLabel() {
         return placedObjectTypeSO.GetLabel();
@@ -41,9 +46,19 @@ public class PlacedObject : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public Vector2Int GetOrigin()
+    {
+        return origin;
+    }
 
+    public PlacedObjectTypeSO GetPlacedObjectTypeSO()
+    {
+        return placedObjectTypeSO;
+    }
 
-    
-
+    public int GetGridIndex()
+    {
+        return gridIndex;
+    }
 
 }
